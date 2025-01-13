@@ -15,8 +15,7 @@ Please also note that this is for testing purposes and not properly secured (by 
 		- As per the UTM website: _"The Mac App Store version is identical to the free version and there are no features left out of the free version. The only advantage of the Mac App Store version is that you can get automatic updates. Purchasing the App Store version directly funds the development of UTM and shows your support ."_
 
 2. Download Debian
-	- Go to https://cdimage.debian.org/debian-cd/current/arm64/iso-dvd/ and download the file whose filename ends with `-arm64-DVD-1.iso`. It should be about 3.7G in size.
-	- You will receive a file named something like `debian-12.9.0-arm64-DVD-1.iso`, the important thing is that the file has the `arm64` in the filename.
+	- Go to https://cdimage.debian.org/cdimage/archive/12.8.0/arm64/iso-dvd/ and download the file whose filename `debian-12.8.0-arm64-DVD-1.iso`. It should be about 3.7G in size.
 
 3. Open UTM and click **Create a New Virtual Machine**. Then, when prompted, click **Virtualize**, then click **Linux**.
 
@@ -24,28 +23,20 @@ Please also note that this is for testing purposes and not properly secured (by 
 
 5. When asked about Hardware, assign 512 MiB of Memory, and 1 CPU core only. Do not "enable hardware OpenGL acceleration" as you do not need that. Then click **Continue**.
 
-6. When asked about Storage, assign only 2 GiB of Storage. Then click **Continue**.
+6. When asked about Storage, assign only 4 GiB of Storage. Then click **Continue**.
 
 7. When asked about Shared Directory, do not set up any shared directories. Then click **Continue**.
 
 8. On the summary page, give the virtual machine the name **debian001**. Then click **Save**.
-
-<!-- 9. Right-click on the debian001 entry in the left-hand-side menubar. Then click **Edit**.
-
-10. Click on **QEMU** and then switch OFF the option named **UEFI Boot**. -->
 
 &nbsp;
 
 _Discussion questions:_
 
 - Q1. Which option did you decide to take for Step 1 (Install UTM), and how did you make that decision?
-
 - Q2. Step 1 refers to security implications of Homebrew. Explain the technical details of the concern about how Homebrew alters permissions on certain folders.
-
 - Q3. Step 2 delivered an `iso` file to your laptop. Which server did it come from and how can we find out more about that server?
-
 - Q4. It is important to verify the checksum of the `iso` file that we received. How can we do that? (Note: you may need to do some independent research about this.)
-
 - Q5. What supply chain risks exist here, and what could we do to mitigate them?
 
 ## Part 2. Setting up the guest
@@ -54,9 +45,9 @@ _Discussion questions:_
 
 ![debian001-boot-screen](../images/debian001-boot-screen.png)
 
-2. This is a command-line interface, not a graphical user interface. Use the arrow keys on your keyboard to navigate up and down the different options to try it out, but we actually want to use the default option called ***Install** (the first on the list). Select it and then hit <kbd>ENTER</kbd> on your keyboard.
+2. This is a command-line interface, not a graphical user interface. Your mouse will not be able to interact with the installer. Use the arrow keys on your keyboard to navigate up and down the different options to try it out, but we actually want to use the default option called ***Install** (the first on the list). Select it and then hit <kbd>ENTER</kbd> on your keyboard.
 
-3. Once you are in the Debian installer, please read the text in the bottom-left corner: _"&lt;Tab&gt; moves; &lt;Space&gt; selects; &lt;Enter&gt; activates buttons"_. Make sure that you do likewise for the remainder of the Debian installer.
+3. Once you are in the Debian installer, the window will automatically resize itself. Please read the text in the bottom-left corner: _"&lt;Tab&gt; moves; &lt;Space&gt; selects; &lt;Enter&gt; activates buttons"_. Make sure that you do likewise for the remainder of the Debian installer.
 
 4. For the language, select **English**. For the location, select **Ireland** (unless you are elsewhere?).
 
@@ -68,7 +59,7 @@ _Discussion questions:_
 
 8. When asked for the full name of the new user, enter your name in lowercase. For example I entered `blair`. Then confirm that this is the username of your account, and set your account to also have the password just as `password`.
 
-9. When asked about partitioning disks, select the default **Guided - use entire disk**, and then allow it to use the default **Virtual disk 1 (vda) - 2.1 GB Virtio Block Device**. Then when prompted, accept the default setting **All files in one partition (recommended for new users)**.
+9. When asked about partitioning disks, select the default **Guided - use entire disk**, and then allow it to use the default **Virtual disk 1 (vda) - 4.3 GB Virtio Block Device**. Then when prompted, accept the default setting **All files in one partition (recommended for new users)**.
 
 10. When invited to, please confirm the partitioning plan:
 
@@ -78,7 +69,10 @@ _Discussion questions:_
 
 12. When prompted to "scan extra installation media", select **&lt;No&gt;**.
 
-13. When prompted to configure a Debian archive mirror country, select **&lt;No&gt;**.
+13. When prompted to configure a network mirror, select **&lt;Yes&gt;**.
+	- When I'm setting up a machine based in Australia, I select Australia and then `mirror.aarnet.edu.au`
+	- When I'm setting up a machine based in Ireland, I select Norway and then `ftp.no.debian.org`
+	- HTTP proxy is not required (unless you are 100% sure that it is)
 
 14. Do not participate in the package usage survey.
 
@@ -86,18 +80,180 @@ _Discussion questions:_
 
 ![debian001-software-selection](../images/debian001-software-selection.png)
 
+16. Finally, the installation will finish and you will be asked to reboot. Select **&lt;Continue&gt;**.
 
+17. When the virtual machine reboots, click the power button at the top-left corner of the screen (just to the right of the usual red/yellow/green window controls). You will be told: _"This may corrupt the VM and any unsaved changes will be lost. To quit safely, shut down from the guest."_ But click **OK** anyway and force the virtual machine to shut down.
 
+18. In the main UTM window, select the **debian001** virtual machine, click on the dropdown labelled **CD/DVD** and then click **Clear**. This will prevent the virtual machine from running the Debian installer every time you boot it up.
 
 &nbsp;
 
 _Discussion questions:_
 
 - Q6. The screenshot below Step 1 refers to "GNU GRUB". What is this? (Note: you may need to do some independent research about this.)
-
 - Q7. The screenshot below Step 10 refers to `ext4` and `swap`. What are these, and what are the security implications of them?
+- Q8. Step 13 refers to "mirrors". What are these?
+- Q9. The screenshot below step 15 refers to various desktop environments. What are these?
 
-- Q13. Step 13 refers to "mirrors". What are these?
 
-- Q15. The screenshot below step 15 refers to various desktop environments. What are these?
+## Part 3. Working with Debian
 
+1. Start up **debian001**. Once it boots up, you will be presented with a very plain and simple prompt:
+
+	```
+	Debian GNU/Linux 12 debian001 tty1
+	
+	debian001 login: _
+	``` 
+
+2. At this prompt, enter your username (whatever you used during setup, i.e., the lowercase version of your given name - for me I used `blair`). Then hit <kbd>ENTER</kbd>. Now your prompt looks like this:
+
+	```
+	Debian GNU/Linux 12 debian001 tty1
+	
+	debian001 login: blair
+	Password: _
+	``` 
+
+3. Enter your password (if you followed the instructions so far, it is `password`). **The password will be completely invisible, you will not even see something like [&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;], this is the correct and expected behaviour.** Just hit <kbd>ENTER</kbd> when you've typed your password.
+
+4. Once you've logged in, you will see something like this:
+
+	```
+	Debian GNU/Linux 12 debian001 tty1
+	
+	debian001 login: blair
+	Password: 
+	Linux debian001 6.1.0-27-arm64 #1 SMP Debian 6.1.115-1 (2024-11-01) aarch64
+	
+	The programs included with the Debian GNU/Linux system are free software;
+	the exact distribution terms for each program are described in the
+	individual files in /usr/share/doc/w/copyright.
+	
+	Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+	permitted by applicable law.
+	blair@debian001:~$ _
+	``` 
+
+5. At this prompt, run `su -` and then enter the root password (if you followed the instructions so far, it is `password`). Now you should see something like this:
+
+	```
+	Debian GNU/Linux 12 debian001 tty1
+	
+	debian001 login: blair
+	Password: 
+	Linux debian001 6.1.0-27-arm64 #1 SMP Debian 6.1.115-1 (2024-11-01) aarch64
+	
+	The programs included with the Debian GNU/Linux system are free software;
+	the exact distribution terms for each program are described in the
+	individual files in /usr/share/doc/w/copyright.
+	
+	Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+	permitted by applicable law.
+	blair@debian001:~$ su -
+	Password:
+	root@debian001:~# _
+	``` 
+	
+6. At this prompt, run `nano /etc/apt/sources.list`.
+	- Please note that you will NOT be able to copy and paste this text into the virtual machine, so you will need to type it manually one letter at a time, sorry!
+	- The purpose of this command is to detach the installer from the virtual machine completely, so that you are able to install new software into this virtual machine.
+	- `nano` is a command-line text editor. `/etc/apt/sources.list` is a file in the virtual machine that configures the package manager.
+
+7. Your screen will now become a little bit more colourful, as you enter `nano`, a command-line text editor:
+
+![debian001-nano1](../images/debian001-nano1.png)
+
+8. With the cursor on the first line (which it is by default), hit <kbd>Ctrl</kbd>+<kbd>K</kbd> on your keyboard. Yes, that is **Ctrl** (on Mac keyboards, <kbd>control ^</kbd>); NOT "Command". You can see that this is the "Cut" shortcut if you look at the bottom of your virtual machine window. Now your screen looks like this:
+
+![debian001-nano2](../images/debian001-nano2.png)
+
+9. If you were not able to successfully do this (e.g., if you had selected the wrong line, hit <kbd>Ctrl</kbd>+<kbd>X</kbd> and then type "n"). Now go back to step 6 and try steps 6 to 8 again.
+	- While you are inside `nano`, if you look at the bottom of your virtual machine window, you will see that Ctrl+X is the "Exit" shortcut.
+	- Hint: at the prompt, if you use the up key on your keyboard, it will go back to previous commands.
+
+10. Now, run `apt update -y && apt-upgrade -y`. Please note that you will NOT be able to copy and paste this text into the virtual machine, so you will need to type it manually one letter at a time, sorry! The output should look something like this (note that this is when there are no updates, if there are updates available then the output will look a little bit different):
+
+	```
+	root@debian001:~# apt update -y && apt upgrade -y
+	Hit:1 http://ftp.no.debian.org/debian bookworm InRelease
+	Hit:2 http://security.debian.org/debian-security bookworm-security InRelease
+	Hit:3 http://ftp.no.debian.org/debian bookworm-updates InRelease
+	Reading package lists... Done
+	Building dependency tree... Done
+	Reading state information... Done
+	All packages are up to date.
+	Reading package lists... Done
+	Building dependency tree... Done
+	Reading state information... Done
+	Calculating upgrade... Done
+	0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+	root@debian001:~# _
+	```
+
+11. Now, run `apt install -y sudo`. The output should look something like this:
+
+	```
+	root@debian001:~# apt install -y sudo
+	Reading package lists... Done
+	Building dependency tree... Done
+	Reading state information... Done
+	The following NEW packages will be installed:
+  	sudo
+	0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+	Need to get 1,826 kB of archives.
+	After this operation, 6,511 kB of additional disk space will be used.
+	Get:1 http://ftp.no.debian.org/dehian bookworm/main arm64 sudo arm64 1.9.13p3-1+deb12u1 ［1,826 KB］
+	Fetched 1,826 kB in 1s (2,161 kB/s)
+	Selecting previously unselected package sudo.
+	(Reading database ... 38602 files and directories currently installed.)
+	Preparing to unpack .../sudo_1.9.13p3-1+deb12u1_arm64.deb ...
+	Unpacking sudo (1.9.15p3-1+deb1241) ...
+	Setting up sudo (1.9.13p3-1+deb12u1) ...
+	Processing triggers for man-db (2.11.2-2) ...
+	Processing triggers for libc-bin (2.36-9+deb12u9) ...
+	root@debian001:~# _
+	```
+
+12. At this prompt, type `export EDITOR=nano` and hit <kbd>ENTER</kbd>. Then run `visudo`.
+
+13. Using your arrow keys on your keyboard, scroll down to the part of the file that looks like this:
+
+	```
+	# User privilege specification
+	root    ALL=(ALL:ALL) ALL
+	```
+
+14. Add a new line in there for your own account name, e.g., for `blair`:
+
+
+	```
+	# User privilege specification
+	root    ALL=(ALL:ALL) ALL
+	blair   ALL=(ALL:ALL) ALL
+	```
+
+15. Use <kbd>Ctrl</kbd>+<kbd>X</kbd> to start exiting, then type "y" for "Yes" (to saving the file). Hit <kbd>ENTER</kbd> to confirm the suggested file location.
+
+16. When back at the `root@debian001:~# _` prompt, type `exit`. This will return you back to your main (non-root) account, `blair@debian001:~$ _`.
+
+17. Try to use `sudo`, for example, `sudo echo hi`. You will be prompted for your password; enter it as usual. If your output now looks something like this, then it means that `sudo` is now set up!
+
+	```
+	root@debian001:~# exit
+	logout
+	blair@debian001:~$ sudo echo hi
+	[sudo] password for blair:
+	hi
+	blair@debian001:~$ _
+	```
+
+18. Congratulations, now you know how to set up Debian GNU/Linux virtual machines inside your Apple Silicon Mac! :)
+
+&nbsp;
+
+_Discussion questions:_
+
+- Q10. Step 5 refers to `su -`. What is `su` and why is there a `-` after it?
+- Q11. What is achieved by Step 10?
+- Q12. Steps 11 to 17 set up a tool call `sudo`. What is `sudo` and how is it different to `su`?
