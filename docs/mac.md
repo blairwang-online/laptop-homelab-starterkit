@@ -1,6 +1,6 @@
-# Mac (UTM on ARM) instructions for laptop-homelab-starterkit
+# Apple Silicon Mac (UTM on ARM) instructions for laptop-homelab-starterkit
 
-Note: These instructions assume that you use an Apple Silicon Mac.
+Note: These instructions assume that you use an Apple Silicon Mac. If you are using an Intel Mac, then these instructions may not work.
 
 Please also note that this is for testing purposes and not properly secured (by design). Do not put any confidential or sensitive data into the system that we set up here.
 
@@ -35,11 +35,10 @@ _Discussion questions:_
 
 - Q1. Which option did you decide to take for Step 1 (Install UTM), and how did you make that decision?
 - Q2. Step 1 refers to security implications of Homebrew. Explain the technical details of the concern about how Homebrew alters permissions on certain folders.
-- Q3. Step 2 delivered an `iso` file to your laptop. Which server did it come from and how can we find out more about that server?
-- Q4. It is important to verify the checksum of the `iso` file that we received. How can we do that? (Note: you may need to do some independent research about this.)
-- Q5. What supply chain risks exist here, and what could we do to mitigate them?
+- Q3. It is important to verify the checksum of the `iso` file that we received. How can we do that? (Note: you may need to do some independent research about this.)
+- Q4. What supply chain risks exist here, and what could we do to mitigate them?
 
-## Part 2. Setting up the guest
+## Part 2. Installing Debian
 
 1. Start the virtual machine **debian001**. A new window will appear and soon it will look something like this:
 
@@ -90,13 +89,13 @@ _Discussion questions:_
 
 _Discussion questions:_
 
-- Q6. The screenshot below Step 1 refers to "GNU GRUB". What is this? (Note: you may need to do some independent research about this.)
-- Q7. The screenshot below Step 10 refers to `ext4` and `swap`. What are these, and what are the security implications of them?
-- Q8. Step 13 refers to "mirrors". What are these?
-- Q9. The screenshot below step 15 refers to various desktop environments. What are these?
+- Q5. The screenshot below Step 1 refers to "GNU GRUB". What is this? (Note: you may need to do some independent research about this.)
+- Q6. The screenshot below Step 10 refers to `ext4` and `swap`. What are these, and what are the security implications of them?
+- Q7. Step 13 refers to "mirrors". What are these?
+- Q8. The screenshot below step 15 refers to various desktop environments. What are these?
 
 
-## Part 3. Working with Debian
+## Part 3. Configuring Debian
 
 1. Start up **debian001**. Once it boots up, you will be presented with a very plain and simple prompt:
 
@@ -168,7 +167,7 @@ _Discussion questions:_
 
 ![debian001-nano2](../images/debian001-nano2.png)
 
-9. If you were not able to successfully do this (e.g., if you had selected the wrong line, hit <kbd>Ctrl</kbd>+<kbd>X</kbd> and then type "n"). Now go back to step 6 and try steps 6 to 8 again.
+9. If you were not able to successfully do this (e.g., if you had selected the wrong line, hit <kbd>Ctrl</kbd>+<kbd>X</kbd> and then type "n"). Now go back to step 6 and try steps 6 to 8 again. However, if you _were_ able to successfully do this, then hit <kbd>Ctrl</kbd>+<kbd>X</kbd> and then type "y". Then hit <kbd>ENTER</kbd>.
 	- While you are inside `nano`, if you look at the bottom of your virtual machine window, you will see that Ctrl+X is the "Exit" shortcut.
 	- Hint: at the prompt, if you use the up key on your keyboard, it will go back to previous commands.
 
@@ -254,6 +253,60 @@ _Discussion questions:_
 
 _Discussion questions:_
 
-- Q10. Step 5 refers to `su -`. What is `su` and why is there a `-` after it?
-- Q11. What is achieved by Step 10?
-- Q12. Steps 11 to 17 set up a tool call `sudo`. What is `sudo` and how is it different to `su`?
+- Q9. Step 5 refers to `su -`. What is `su` and why is there a `-` after it?
+- Q10. What is achieved by Step 10?
+- Q11. Steps 11 to 17 set up a tool call `sudo`. What is `sudo` and how is it different to `su`?
+
+
+## Part 4. Multiple VMs
+
+1. In your virtual machine `debian001`, run the command `ip addr`. The output will look something like this:
+
+	```
+	blair@debian001:~$ ip addr
+	1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+		link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+		inet 127.0.0.1/8 scope host lo
+		   valid_lft forever preferred_lft forever
+		inet6 ::1/128 scope host noprefixroute 
+		   valid_lft forever preferred_lft forever
+	2: enp0s1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+		link/ether xx:xx:xx:xx:xx:xx brd ff:ff:ff:ff:ff:ff
+		inet 192.168.64.24/24 brd 192.168.64.255 scope global dynamic enp0s1
+		   valid_lft 78420sec preferred_lft 78420sec
+		inet6 xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx/64 scope global dynamic mngtmpaddr 
+		   valid_lft 2591928sec preferred_lft 604728sec
+		inet6 xxxx::xxxx:0xx:xxxx:xxxx/64 scope link 
+		   valid_lft forever preferred_lft forever
+	```
+	
+2. We are looking for the local IP address, `192.168.xx.xx`.
+	- Can you see it in the output above? In this case, it is `192.168.64.24`
+	- If you are having difficulty seeing it, try running this instead: `ip addr | grep inet`
+	- Or better yet: `ip addr | grep 192` (!)
+	
+3. On your Mac, open the app called **Terminal.app**. Once it loads, run the command: `ssh your_name@192.168.xx.xx`, **substituting your_name with your actual username in debian001, and 192.168.xx.xx with the actual IP address**. So for example, I will run the command:
+
+	```
+	ssh blair@192.168.64.24
+	```
+
+4. When prompted about the ED25519 key fingerprint, type "yes" and then hit <kbd>ENTER</kbd>. Then type the password from before (probably `password`!). Now you will be accessing the virtual machine through the native macOS terminal rather than through the UTM window!
+	- From this point onwards, <kbd>Command</kbd>+<kbd>C</kbd> to copy and <kbd>Command</kbd>+<kbd>V</kbd> to paste will work, if you use the Mac Terminal.
+	- The output looks something like this:
+
+![debian001-from-mac-terminal](../images/debian001-from-mac-terminal.png)
+
+5. Now, we will create another VM called `debian002`. It will have essentially the same settings as `debian001`. To do this, complete Parts 2 and 3 with another new VM with the same settings. In fact, keep everything the same, but this time call it `debian002`.
+
+6. Based on steps 1 and 2 above, deduce the IP addresses of both `debian001` and `debian002`
+
+7. From `debian001`, ping `debian002` to confirm the two machines can talk to each other; for completeness, also try to ping in the other direction, from `debian002` to `debian001`.
+
+&nbsp;
+
+_Discussion questions:_
+
+- Q12. Step 2 involves the use of pipes and grep. Explain how these work.
+- Q13. Step 3 involves the use of SSH. What is SSH and why is it of significance in cybersecurity?
+- Q14. What is the security notice in Step 4 about?
