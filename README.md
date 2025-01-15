@@ -1,5 +1,7 @@
 # laptop-homelab-starterkit
 
+![laptop-homelab-starterkit](images/banner/laptop-homelab-starterkit.png)
+
 Starter kit for setting up lightweight virtual machines that can talk to each other, all from the comfort of your own laptop.
 
 - [Apple Silicon Mac (UTM on ARM) instructions](./docs/mac.md)
