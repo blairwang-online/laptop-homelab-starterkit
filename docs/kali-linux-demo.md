@@ -1,5 +1,8 @@
 # Kali Linux demo
 
+> [!CAUTION]
+> Do **not** use these instructions if your organisation or university does not permit the use of Kali / Kali Linux.
+
 ## Before we begin...
 
 - **Very visibly disconnect from the Internet!**

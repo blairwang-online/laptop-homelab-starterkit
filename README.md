@@ -11,7 +11,8 @@ Starter kit for setting up lightweight virtual machines that can talk to each ot
 
 ## Demonstrations
 
-- [Kali Linux demo](./docs/kali-linux-demo.md)
+- [opnsense](./docs/opnsense.md)
+- [Kali Linux demo](./docs/kali-linux-demo.md) _(do NOT use this if your organisation does not allow Kali)_
 
 &nbsp;
 
